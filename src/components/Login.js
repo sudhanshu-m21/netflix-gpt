@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Header from "./Header";
+import { checkValidData } from "../utils/Validate";
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const email = useRef(null);
+  const password = useRef(null);
   const toggleSignIn = () => {
     setIsSignIn(!isSignIn);
+  };
+  const handleButtonClick = () => {
+    //validate form data
+    const message = checkValidData(email.current.value, password.current.value);
+    setErrorMessage(message);
   };
   return (
     <div>
@@ -16,7 +25,10 @@ const Login = () => {
         />
       </div>
       <div className="flex justify-center ">
-        <form className="w-3/12 absolute bg-black p-12 bg-opacity-80  text-white mt-20">
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          className="w-3/12 absolute bg-black p-12 bg-opacity-80  text-white mt-20"
+        >
           <h1 className="text-white font-bold text-3xl">
             {isSignIn ? "Sign In" : "Sign Up"}
           </h1>
@@ -28,15 +40,18 @@ const Login = () => {
             />
           )}
           <input
+            ref={email}
             type="text"
             placeholder="Email"
             className="p-4 my-4 w-full bg-gray-700"
           />
           <input
+            ref={password}
             type="text"
             placeholder="Password"
             className="p-4 my-4 w-full bg-gray-700"
           />
+          <p className="text-red-600 text-lg font-bold">{errorMessage}</p>
           {!isSignIn && (
             <input
               type="text"
@@ -44,7 +59,10 @@ const Login = () => {
               className="p-4 my-4 w-full bg-gray-700"
             />
           )}
-          <button className="p-4 my-6 bg-red-700 w-full rounded-lg">
+          <button
+            className="p-4 my-6 bg-red-700 w-full rounded-lg"
+            onClick={handleButtonClick}
+          >
             {isSignIn ? "Sign In" : "Sign Up"}
           </button>
           <p className="py-4 cursor-pointer" onClick={toggleSignIn}>
